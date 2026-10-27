@@ -362,21 +362,22 @@
       updateMotivationalCard();
     }
 
-    // LÓGICA DE MONETIZACIÓN 
+    // LÓGICA DE MONETIZACIÓN ACTUALIZADA
     function computeMonetization(tDays, tHours, tDiamonds) {
       let baseMoney = 0;
       let isOver80k = false;
 
-      if (tDays >= 8 && tHours >= 20 && tDiamonds >= 2000) {
-        let dCap = Math.min(tDiamonds, 80000);
-        
-        let diamondValue = (dCap / 80000) * 34.00;
-        let dayValue = Math.min((tDays / 22) * 8.00, 8.00);
-        let hourValue = Math.min((tHours / 90) * 8.00, 8.00);
+      // Se activan las bonificaciones si alcanza los mínimos requeridos (10 días, 60 horas, 40k diamantes)
+      if (tDays >= 10 && tHours >= 60 && tDiamonds >= 40000) {
+        let dCapped = Math.min(tDiamonds, 80000);
+        let diamondValue = 3.00 + ((dCapped - 40000) / (80000 - 40000)) * (34.00 - 3.00);
+
+        let dayValue = 2.00 + ((tDays - 10) / (22 - 10)) * (8.00 - 2.00);
+        let hourValue = 2.00 + ((tHours - 60) / (90 - 60)) * (8.00 - 2.00);
 
         baseMoney = diamondValue + dayValue + hourValue;
 
-        // ESTRICTO: Se activa el premio si cumple las 3 condiciones exigidas.
+        // ESTRICTO: Se activa el premio si supera las metas máximas
         if (tDiamonds > 80000 && tDays >= 22 && tHours >= 90) {
           isOver80k = true;
         }
@@ -508,7 +509,6 @@
       
       let currentDDisp = globalStats.diamonds >= 1000 ? (globalStats.diamonds/1000).toFixed(1) + 'k' : globalStats.diamonds;
 
-      // EL MENSAJE SE MUESTRA SOLO SI CUMPLE LA CONDICIÓN ESTRICTA
       let over80kHtml = globalStats.over80k 
         ? `<div class="m-alert-gold">🌟 PREMIO EXCLUSIVO + BONO DESBLOQUEADO<br><span style="font-size:0.85em; font-weight:500; color:#eee;">Consulta con tu manager al enviar estas métricas.</span></div>` 
         : '';
@@ -530,7 +530,6 @@
         
         ${over80kHtml}
 
-        <!-- AVISO PERMANENTE PARA QUE TODOS SEPAN DEL PREMIO -->
         <div class="m-info-block" style="border: 1px dashed rgba(255, 215, 0, 0.4); background: rgba(255, 215, 0, 0.05);">
           <strong style="color: var(--gold);">🌟 META EXTRA (+80K DIAMANTES):</strong><br>
           Si superas los 80,000 diamantes (junto a tus 22 días y 90 horas) obtendrás un <strong>PREMIO EXCLUSIVO + BONO DESBLOQUEADO</strong>. Consulta con tu manager al enviar tus métricas.
@@ -590,7 +589,6 @@
       
       const miNumero = "573114835387"; 
       
-      // EL TEXTO SE AGREGA AL WHATSAPP EXACTAMENTE COMO LO PEDISTE
       let extraNote = globalStats.over80k ? "%0A%0A🌟 *PREMIO EXCLUSIVO + BONO DESBLOQUEADO*%0A_Consulta con tu manager al enviar estas métricas._" : "";
 
       const text = `🚀 Hola Karen! Soy *${userName}*.%0A%0A`
@@ -620,4 +618,4 @@
     });
   </script>
 </body>
-</html>
+</html>  
